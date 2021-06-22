@@ -7,7 +7,8 @@ const router = express.Router();
 
 const bcrypt = require('bcrypt');
 const base64 = require('base-64');
-const Users = require('../models/userSchema.js');
+const { Sequelize, DataTypes} = require('sequelize');
+const {user} = require('../models/index.js');
 
 
 router.post('/signin', async (req, res) => {
@@ -35,10 +36,10 @@ router.post('/signin', async (req, res) => {
     3. Either we're valid or we throw an error
   */
   try {
-    const user = await Users.findOne({ where: { username: username } });
+    const userSearch = await user.findOne({ where: { username: username } });
     const valid = await bcrypt.compare(password, user.password);
     if (valid) {
-      res.status(200).json(user);
+      res.status(200).json(userSearch);
     }
     else {
       throw new Error('Invalid User');

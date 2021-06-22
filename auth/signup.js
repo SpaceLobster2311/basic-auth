@@ -3,18 +3,22 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
+const { Sequelize, DataTypes} = require('sequelize');
+const {user} = require('../models/index.js');
 
-const Users = require('../models/userSchema.js');
 
 
+router.post('/signup', async (req, res) => {
 
-router.post('/signup', async (req, res, next) => {
-
+  // user.beforeCreate( async (user) => {
+  //   user.password = bcrypt.hash(user.password, 10);
+  // });
+  console.log(user);
   try {
     req.body.password = await bcrypt.hash(req.body.password, 10);
-    const record = await Users.create(req.body);
-    res.status(200).send(record);
-    next();
+    const record = await user.create(req.body);
+    res.status(200).json(record);
+    
   } catch (e) { res.status(403).send('Error Creating User'); }
 });
 
